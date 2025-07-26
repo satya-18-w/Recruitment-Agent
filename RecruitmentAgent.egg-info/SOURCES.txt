@@ -1,0 +1,7 @@
+setup.py
+RecruitmentAgent.egg-info/PKG-INFO
+RecruitmentAgent.egg-info/SOURCES.txt
+RecruitmentAgent.egg-info/dependency_links.txt
+RecruitmentAgent.egg-info/top_level.txt
+agents/__init__.py
+agents/resume_analyser.py

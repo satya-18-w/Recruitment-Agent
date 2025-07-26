@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: RecruitmentAgent
+Version: 0.1.0
+Summary: Recruitment Agent project
+Author: Satyajit
+Author-email: satyajitsamal198076@gmail.com
+Requires-Python: >=3.7
+Dynamic: author
+Dynamic: author-email
+Dynamic: requires-python
+Dynamic: summary
