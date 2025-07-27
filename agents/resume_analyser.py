@@ -2,12 +2,13 @@ import os
 from dotenv import load_dotenv
 import re
 import PyPDF2
+# from langchain_groq import ChatGroq
 import io
 from langchain_google_genai import ChatGoogleGenerativeAI,GoogleGenerativeAIEmbeddings
 from langchain.chains import RetrievalQA
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
-from lagchain_community.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from concurrent.futures import ThreadPoolExecutor
 import tempfile
@@ -19,9 +20,10 @@ import json
 
 class ResumeAnalysisAgent:
     def __init__(self,api_key,cutoff=75):
-        self.api_key = api_key
+        self.api_key=api_key
         self.cutoff = cutoff
-        self.llm=ChatGoogleGenerativeAI(model='gemini-2.5-flash',temperature=0.8,api_key=self.api_key)
+        self.llm=ChatGoogleGenerativeAI(model='gemini-2.5-flash',temperature=0.8,api_key=api_key)
+        
         self.resume_text = None
         self.rag_vectorstore = None
         self.analysis_result = None
@@ -32,25 +34,25 @@ class ResumeAnalysisAgent:
         self.improvement_suggestions = {}
         
         
-    def extract_text_from_pdf(self,pdf_file):
+    def extract_text_from_pdf(self, pdf_file):
         try:
-            if hasattr(pdf_file,"getvalue"):
-                pdf_data=pdf_file.getvalue()
-                pdf_file_like=io.BytesIO(pdf_file)
-                reader=PyPDF2.PdfReader(pdf_file_like)
-                
+            # If it's a Streamlit UploadedFile, use .read() or .getvalue()
+            if hasattr(pdf_file, "read"):
+                pdf_data = pdf_file.read()
+                pdf_file.seek(0)  # Reset pointer for future reads
+                pdf_file_like = io.BytesIO(pdf_data)
             else:
-                reader=PyPDF2.PdfReader(pdf_file_like)
-                
-            text=""
+                # If it's already bytes, wrap it
+                pdf_file_like = io.BytesIO(pdf_file)
+            reader = PyPDF2.PdfReader(pdf_file_like)
+            text = ""
             for page in reader.pages:
-                text+=page.extract_text()
-                
+                text += page.extract_text()
             return text
         except Exception as e:
             print(f"Error extracting text from PDF: {e}")
             return ""
-        
+            
              
              
     def extract_text_from_txt(self, txt_file):
